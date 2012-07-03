@@ -17,6 +17,7 @@ package
 	 * ...
 	 * @author Toshiyuki Suzumura  / Twitter:@suzumura_ss
 	 */
+	
 	public class EquirectangularPlayer
 	{
 		protected var _width:Number;
@@ -27,7 +28,7 @@ package
 		protected var _camera:Camera3D;
 		protected var _controller:SimpleObjectController;
 		protected var _indicator:LoadIndicator;
-		protected var _worldMesh:SphereMesh;
+		protected var _worldMesh:WorldMesh;
 		private var _options:Dictionary;
 		
 		public function EquirectangularPlayer(width_:Number, height_:Number, parent:Sprite, options:Dictionary = null):void
@@ -76,9 +77,13 @@ package
 				_indicator.destroy();
 			});
 			
-			_worldMesh = new SphereMesh();
+			if (_options["cubic"]) {
+				_worldMesh = new CubicMesh(_options);
+			} else {
+				_worldMesh = new SphereMesh(_options);
+			}
 			_worldMesh.applyTexture(bitmapData, _stage3D);
-			_rootContainer.addChild(_worldMesh);
+			_rootContainer.addChild(_worldMesh.mesh());
 			
 			_stage3D.requestContext3D();			
 		}

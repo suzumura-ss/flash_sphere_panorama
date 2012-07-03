@@ -4,10 +4,12 @@ package
 	import flash.display.BitmapData;
 	import flash.geom.Matrix;
 	import flash.geom.Point;
+	
 	/**
 	 * ...
 	 * @author Toshiyuki Suzumura  / Twitter:@suzumura_ss
 	 */
+	
 	public class ImageTextureResource extends BitmapTextureResource
 	{
 		

@@ -30,6 +30,8 @@ package
 		{
 			var htmlParams:Object = LoaderInfo(root.loaderInfo).parameters;
 			var sourceUrl:String = htmlParams["source"] || "forest.jpg";
+			//sourceUrl = "cubicForest.jpg";
+			//htmlParams["cubic"] = "true";
 			stage.align = StageAlign.TOP_LEFT;
 			stage.scaleMode = StageScaleMode.NO_SCALE;
 			
@@ -39,7 +41,8 @@ package
 				var ext:String = URLUtil.getExtension(sourceUrl).toLowerCase();
 				var opt:Dictionary = new Dictionary();
 				opt["showDiagram"] = (htmlParams["showDiagram"]=="true") || false;
-				opt["hideLogo"] = (htmlParams["hideLogo"]=="true") || false;
+				opt["hideLogo"] = (htmlParams["hideLogo"] == "true") || false;
+				opt["cubic"] = htmlParams["cubic"] || false;
 				if (IMAGES.indexOf(ext) >= 0) {
 					_player = new EquirectangularPlayer(stage.stageWidth, stage.stageHeight, this, opt);
 				} else if (VIDEOS.indexOf(ext) >= 0) {
