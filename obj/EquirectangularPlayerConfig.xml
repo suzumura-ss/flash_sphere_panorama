@@ -8,31 +8,33 @@
   <compiler>
     <define append="true">
       <name>CONFIG::debug</name>
-      <value>true</value>
-    </define>
-    <define append="true">
-      <name>CONFIG::release</name>
       <value>false</value>
     </define>
     <define append="true">
-      <name>CONFIG::timeStamp</name>
-      <value>'2012/06/29'</value>
+      <name>CONFIG::release</name>
+      <value>true</value>
     </define>
-    <verbose-stacktraces>true</verbose-stacktraces>
+    <define append="true">
+      <name>CONFIG::timeStamp</name>
+      <value>'2012/07/03'</value>
+    </define>
+    <optimize>true</optimize>
+    <omit-trace-statements>true</omit-trace-statements>
+    <verbose-stacktraces>false</verbose-stacktraces>
     <source-path append="true">
-      <path-element>Z:\terasita\projects\ape\ape-world\496-EquirectangularPlayer\lib</path-element>
-      <path-element>Z:\terasita\projects\ape\ape-world\496-EquirectangularPlayer\src</path-element>
+      <path-element>Z:\terasita\github\flash_sphere_panorama\lib</path-element>
+      <path-element>Z:\terasita\github\flash_sphere_panorama\src</path-element>
       <path-element>C:\bin\FlashDevelop4\Library\AS3\classes</path-element>
     </source-path>
     <library-path append="true">
-      <path-element>Z:\terasita\projects\ape\ape-world\496-EquirectangularPlayer\lib\Alternativa3D.swc</path-element>
-      <path-element>Z:\terasita\projects\ape\ape-world\496-EquirectangularPlayer\lib\as3corelib.swc</path-element>
-      <path-element>Z:\terasita\projects\ape\ape-world\496-EquirectangularPlayer\lib\as3crypto.swc</path-element>
-      <path-element>Z:\terasita\projects\ape\ape-world\496-EquirectangularPlayer\lib\Progression4.swc</path-element>
+      <path-element>Z:\terasita\github\flash_sphere_panorama\lib\Alternativa3D.swc</path-element>
+      <path-element>Z:\terasita\github\flash_sphere_panorama\lib\as3corelib.swc</path-element>
+      <path-element>Z:\terasita\github\flash_sphere_panorama\lib\as3crypto.swc</path-element>
+      <path-element>Z:\terasita\github\flash_sphere_panorama\lib\Progression4.swc</path-element>
     </library-path>
   </compiler>
   <file-specs>
-    <path-element>Z:\terasita\projects\ape\ape-world\496-EquirectangularPlayer\src\Main.as</path-element>
+    <path-element>Z:\terasita\github\flash_sphere_panorama\src\Main.as</path-element>
   </file-specs>
   <default-background-color>#FFFFFF</default-background-color>
   <default-frame-rate>30</default-frame-rate>
