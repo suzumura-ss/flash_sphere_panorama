@@ -29,6 +29,9 @@ package
 		protected var _controller:SimpleObjectController;
 		protected var _indicator:LoadIndicator;
 		protected var _worldMesh:WorldMesh;
+		private var _angle:Number;
+		private var _angleMax:Number;
+		private var _angleMin:Number;
 		private var _options:Dictionary;
 		
 		public function EquirectangularPlayer(width_:Number, height_:Number, parent:Sprite, options:Dictionary = null):void
@@ -37,6 +40,9 @@ package
 			_height = height_;
 			_parent = parent;
 			_options = options || new Dictionary();
+			_angle = _options["angle"] || 60;
+			_angleMax = _options["angleMax"] || 120;
+			_angleMin = _options["angleMin"] || 30;
 			_indicator = new LoadIndicator(parent, width_ / 2.0, height_ / 2.0, 50, 30, 30, 4, 0xffffff, 2);
 		}
 		
@@ -54,10 +60,11 @@ package
 		protected function setup(bitmapData:BitmapData):void
 		{
 			_rootContainer = new Object3D();
-			_camera = new Camera3D(1, 1000);
+			_camera = new Camera3D(1, 2000);
 			_rootContainer.addChild(_camera);
 			
 			_camera.view = new View(_width, _height, false, 0x202020, 0, 4);
+			_camera.fov = Utils.to_rad(_angle);
 			if(_options["hideLogo"]) _camera.view.hideLogo();
 			_parent.addChild(_camera.view);
 			if(_options["showDiagram"]) _parent.addChild(_camera.diagram);
@@ -67,13 +74,16 @@ package
 			_controller.maxPitch = center + Math.PI / 2.0;
 			_controller.minPitch = center - Math.PI / 2.0;
 			_controller.lookAtXYZ(0, 0, 0);
+			if (_options["wheelControl"]) {
+				_parent.stage.addEventListener(MouseEvent.MOUSE_WHEEL, onMouseWheel);
+			}
 			
 			_stage3D = _parent.stage.stage3Ds[0];
 			_stage3D.addEventListener(Event.CONTEXT3D_CREATE, function(e:Event):void {
 				for each (var resource:Resource in _rootContainer.getResources(true)) {
 					resource.upload(_stage3D.context3D);
 				}
-				_parent.addEventListener(Event.ENTER_FRAME, onEnterFrame)
+				_parent.addEventListener(Event.ENTER_FRAME, onEnterFrame);
 				_indicator.destroy();
 			});
 			
@@ -85,7 +95,7 @@ package
 			_worldMesh.applyTexture(bitmapData, _stage3D);
 			_rootContainer.addChild(_worldMesh.mesh());
 			
-			_stage3D.requestContext3D();			
+			_stage3D.requestContext3D();
 		}
 		
 		private function onImageLoadCompleted(e:Event):void
@@ -102,10 +112,28 @@ package
 		
 		private function onEnterFrame(e:Event):void
 		{
-			_camera.view.width = _parent.stage.stageWidth;
-			_camera.view.height = _parent.stage.stageHeight;
+			_width = _camera.view.width = _parent.stage.stageWidth;
+			_height = _camera.view.height = _parent.stage.stageHeight;
 			_controller.update();
 			_camera.render(_stage3D);
+		}
+		
+		public function onMouseWheel(e:MouseEvent):void
+		{
+			_angle += (e.delta > 0) ? 1: -1;
+			_angle = Math.max(Math.min(_angle, _angleMax), _angleMin);
+			_camera.fov = Utils.to_rad(_angle);
+			trace(_angle);
+		}
+		
+		public function snapshot():BitmapData
+		{
+			_camera.view.renderToBitmap = true;
+			_camera.render(_stage3D);
+			var bmp:BitmapData = new BitmapData(_width, _height);
+			bmp.draw(_camera.view.canvas);
+			_camera.view.renderToBitmap = false;
+			return bmp;
 		}
 	}
 }

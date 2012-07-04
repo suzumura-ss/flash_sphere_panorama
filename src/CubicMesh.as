@@ -10,7 +10,7 @@ package
 	
 	/**
 	 * ...
-	 * @author Toshiyuki Terashita
+	 * @author Toshiyuki Suzumura  / Twitter:@suzumura_ss
 	 */
 	
 	public class CubicMesh extends WorldMesh
