@@ -24,32 +24,30 @@ package
 		public override function applyTexture(bitmapData:BitmapData, stage3D:Stage3D):void
 		{
 			var bits:Vector.<BitmapData> = new Vector.<BitmapData>;
-			var w:int = bitmapData.width, h:int = bitmapData.height, x:int, y:int;
+			var w:int = bitmapData.width / 3, h:int = bitmapData.height / 2, i:int;
 			var b:BitmapData;
 			var mat:Matrix;
-			if (w / 6 == h) {
-				// 6x1
-				w /= 6;
-				for (x = 0; x < 6; x++) {
-					b = new BitmapData(w, h);
-					mat = new Matrix(1, 1, 1, 1, w * x, 0);
-					b.draw(bitmapData, mat);
+			
+			// 3x2
+			const X:Array = [2, 1, 2, 0, 0, 1];
+			const Y:Array = [1, 1, 0, 0, 1, 0];
+			for (i = 0; i < 6; i++) {
+				b = new BitmapData(w, h);
+				mat = new Matrix(1, 0, 0, 1, -w * X[i], -h * Y[i]);
+				b.draw(bitmapData, mat);
+				if (i == 1) {
+					var c:BitmapData = new BitmapData(w, h);
+					mat = new Matrix();
+					mat.translate( -w / 2.0, -h / 2.0);
+					mat.rotate(Math.PI);
+					mat.translate( w / 2.0, h / 2.0);
+					c.draw(b, mat);
+					bits.push(c);
+				} else {
 					bits.push(b);
 				}
-			} else {
-				// 3x2
-				w /= 3;
-				h /= 2;
-				for (y = 0; y < 2; y++) {
-					for (x = 0; x < 3; x++) {
-						b = new BitmapData(w, h);
-						mat = new Matrix(1, 0, 0, 1, -w * x, -h * y);
-						b.draw(bitmapData, mat);
-						bits.push(b);
-					}
-				}
 			}
-			var i:int = 0;
+			i = 0;
 			for each(b in bits) {
 				var t:ImageTextureResource = new ImageTextureResource(b, true);
 				var m:TextureMaterial = new TextureMaterial(t);

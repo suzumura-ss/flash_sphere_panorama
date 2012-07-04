@@ -30,8 +30,6 @@ package
 		{
 			var htmlParams:Object = LoaderInfo(root.loaderInfo).parameters;
 			var sourceUrl:String = htmlParams["source"] || "forest.jpg";
-			//sourceUrl = "cubicForest.jpg";
-			//htmlParams["cubic"] = "true";
 			stage.align = StageAlign.TOP_LEFT;
 			stage.scaleMode = StageScaleMode.NO_SCALE;
 			
