@@ -41,11 +41,6 @@ package
 			this.z = Math.sin(_pitch);
 		}
 		
-		public function lookAtXYZ(x:Number, y:Number, z:Number):void
-		{
-			lookAt(new Vector3D(x, y, z));
-		}
-		
 		public function lookAt(v:Vector3D):void
 		{
 			_yaw = Math.atan2(v.y, v.x);

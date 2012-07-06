@@ -1,6 +1,7 @@
 package  
 {
 	import alternativa.engine3d.core.Camera3D;
+	import alternativa.engine3d.core.events.MouseEvent3D;
 	import alternativa.engine3d.core.Object3D;
 	import alternativa.engine3d.core.Resource;
 	import alternativa.engine3d.core.View;
@@ -80,6 +81,11 @@ package
 			_rootContainer.addChild(_worldMesh.mesh());
 			
 			_stage3D.requestContext3D();
+			
+			_worldMesh.mesh().doubleClickEnabled = true;
+			_worldMesh.mesh().addEventListener(MouseEvent3D.DOUBLE_CLICK, function(e:MouseEvent3D):void {
+				_controller.lookAt(new Vector3D(e.localX, e.localY, e.localZ));
+			});
 		}
 		
 		private function onImageLoadCompleted(e:Event):void

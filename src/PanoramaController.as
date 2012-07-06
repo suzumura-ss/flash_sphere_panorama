@@ -4,6 +4,7 @@ package
 	import alternativa.engine3d.core.Camera3D;
 	import flash.display.InteractiveObject;
 	import flash.events.MouseEvent;
+	import flash.geom.Vector3D;
 	import flash.utils.Dictionary;
 
 	/**
@@ -35,10 +36,6 @@ package
 				eventSource.addEventListener(MouseEvent.MOUSE_WHEEL, onMouseWheel);
 			}
 			_camera.fov = Utils.to_rad(_angle);
-			
-			eventSource.addEventListener(MouseEvent.DOUBLE_CLICK, function(e:MouseEvent):void {
-				trace(e);
-			});
 		}
 		
 		public function onMouseWheel(e:MouseEvent):void
@@ -52,7 +49,13 @@ package
 		{
 			_lookAtWithRotation.yaw = yaw;
 			_lookAtWithRotation.pitch = pitch;
-			this.lookAt(_lookAtWithRotation);
+			lookAt(_lookAtWithRotation);
+		}
+		
+		override public function lookAt(point:Vector3D):void 
+		{
+			_lookAtWithRotation.lookAt(point);
+			super.lookAt(_lookAtWithRotation);
 		}
 	}
 }
