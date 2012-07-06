@@ -43,7 +43,7 @@ package
 		public function load(url:String, onCompleted:Function = null):void
 		{
 			var loader:Loader = new Loader();
-			onCompleted ||= onImageLoadCompleted;
+			if(onCompleted==null) onCompleted = onImageLoadCompleted;
 			loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onCompleted);
 			loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, function(e:Event):void {
 				Utils.Trace(e);
@@ -70,6 +70,7 @@ package
 				for each (var resource:Resource in _rootContainer.getResources(true)) {
 					resource.upload(_stage3D.context3D);
 				}
+				_parent.addEventListener(Event.ENTER_FRAME, onEnterFrame);
 				_indicator.destroy();
 			});
 			
