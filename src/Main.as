@@ -6,6 +6,7 @@ package
 	import flash.display.*;
 	import flash.events.*;
 	import flash.external.ExternalInterface;
+	import flash.geom.Vector3D;
 	import flash.utils.Dictionary;
 	import jp.nium.utils.URLUtil;
 	
@@ -72,6 +73,9 @@ package
 						ExternalInterface.addCallback("mousewheel", function(delta:Number):void {
 							var e:MouseEvent = new MouseEvent(MouseEvent.MOUSE_WHEEL, false, false, 0, 0, null, false, false, false, false, delta);
 							_player.onMouseWheel(e);
+						});
+						ExternalInterface.addCallback("rotate", function(yaw:Number, pitch:Number):void {
+							_player.rotate(yaw, pitch);
 						});
 					} catch (x:SecurityError) {
 						trace(x);

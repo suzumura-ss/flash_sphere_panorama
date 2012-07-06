@@ -1,15 +1,13 @@
 package  
 {
-	import alternativa.engine3d.controllers.SimpleObjectController;
 	import alternativa.engine3d.core.Camera3D;
 	import alternativa.engine3d.core.Object3D;
 	import alternativa.engine3d.core.Resource;
 	import alternativa.engine3d.core.View;
-	import alternativa.engine3d.objects.Surface;
-	import com.adobe.protocols.dict.Dict;
 	import com.sitedaniel.view.components.LoadIndicator;
 	import flash.display.*;
 	import flash.events.*;
+	import flash.geom.*;
 	import flash.net.URLRequest;
 	import flash.utils.Dictionary;
 	
@@ -24,14 +22,11 @@ package
 		protected var _height:Number;
 		protected var _parent:Sprite;
 		protected var _stage3D:Stage3D;
-		protected var _rootContainer:Object3D;
 		protected var _camera:Camera3D;
-		protected var _controller:SimpleObjectController;
+		protected var _rootContainer:Object3D;
+		protected var _controller:PanoramaController;
 		protected var _indicator:LoadIndicator;
 		protected var _worldMesh:WorldMesh;
-		private var _angle:Number;
-		private var _angleMax:Number;
-		private var _angleMin:Number;
 		private var _options:Dictionary;
 		
 		public function EquirectangularPlayer(width_:Number, height_:Number, parent:Sprite, options:Dictionary = null):void
@@ -40,9 +35,6 @@ package
 			_height = height_;
 			_parent = parent;
 			_options = options || new Dictionary();
-			_angle = _options["angle"] || 60;
-			_angleMax = _options["angleMax"] || 120;
-			_angleMin = _options["angleMin"] || 30;
 			_indicator = new LoadIndicator(parent, width_ / 2.0, height_ / 2.0, 50, 30, 30, 4, 0xffffff, 2);
 		}
 		
@@ -60,23 +52,15 @@ package
 		protected function setup(bitmapData:BitmapData):void
 		{
 			_rootContainer = new Object3D();
+			
 			_camera = new Camera3D(1, 2000);
 			_rootContainer.addChild(_camera);
-			
 			_camera.view = new View(_width, _height, false, 0x202020, 0, 4);
-			_camera.fov = Utils.to_rad(_angle);
 			if(_options["hideLogo"]) _camera.view.hideLogo();
 			_parent.addChild(_camera.view);
 			if(_options["showDiagram"]) _parent.addChild(_camera.diagram);
 			
-			_controller = new SimpleObjectController(_parent.stage, _camera, 200, 3, -1);
-			var center:Number = -Math.PI / 2.0;
-			_controller.maxPitch = center + Math.PI / 2.0;
-			_controller.minPitch = center - Math.PI / 2.0;
-			_controller.lookAtXYZ(0, 0, 0);
-			if (_options["wheelControl"]) {
-				_parent.stage.addEventListener(MouseEvent.MOUSE_WHEEL, onMouseWheel);
-			}
+			_controller = new PanoramaController(_parent.stage, _camera, 200, 3, -1, _options);
 			
 			_stage3D = _parent.stage.stage3Ds[0];
 			_stage3D.addEventListener(Event.CONTEXT3D_CREATE, function(e:Event):void {
@@ -120,10 +104,12 @@ package
 		
 		public function onMouseWheel(e:MouseEvent):void
 		{
-			_angle += (e.delta > 0) ? 1: -1;
-			_angle = Math.max(Math.min(_angle, _angleMax), _angleMin);
-			_camera.fov = Utils.to_rad(_angle);
-			trace(_angle);
+			_controller.onMouseWheel(e);
+		}
+		
+		public function rotate(yaw:Number, pitch:Number):void
+		{
+			_controller.rotate(yaw, pitch);
 		}
 		
 		public function snapshot():BitmapData
