@@ -26,8 +26,18 @@ package
 			if (ExternalInterface.available) {
 				try {
 					if (jsFunction) ExternalInterface.call(jsFunction, data);
-				} catch (x:SecurityError) {
-					trace(x);
+				} catch (x:Error) {
+					Trace(x);
+				}
+			}
+		}
+		
+		static internal function Trace(msg:Object):void
+		{
+			trace(msg);
+			if (ExternalInterface.available) {
+				try {
+					ExternalInterface.call("console.log", msg.toString());
 				} catch (x:Error) {
 					trace(x);
 				}

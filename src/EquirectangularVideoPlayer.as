@@ -24,17 +24,17 @@ package
 			super(width_, height_, parent, options);
 		}
 		
-		public override function load(url:String):void
+		override public function load(url:String, onComolete:Function = null):void 
 		{
 			setup(new BitmapData(1, 1));
 			
 			var connection:NetConnection = new NetConnection();
 			connection.connect(null);
 			connection.addEventListener(NetStatusEvent.NET_STATUS, function(e:NetStatusEvent):void {
-				trace("connection.NetStatusEvent: " + ObjectUtil.toString(e.info));
+				Utils.Trace("connection.NetStatusEvent: " + ObjectUtil.toString(e.info));
 			});
 			connection.addEventListener(SecurityErrorEvent.SECURITY_ERROR, function(e:SecurityErrorEvent):void {
-				trace("connection.SecurityErrorEvent: " + e.text);
+				Utils.Trace("connection.SecurityErrorEvent: " + e.text);
 			});
 			
 			var stream:NetStream = new NetStream(connection);
@@ -80,7 +80,7 @@ package
 		{
 			switch(e.info.level) {
 			case "error":
-				trace("netStatusHandler:[error] " + ObjectUtil.toString(e.info));
+				Utils.Trace("netStatusHandler:[error] " + ObjectUtil.toString(e.info));
 				break;
 			case "status":
 				if (e.info.code == "NetStream.Play.Stop") {

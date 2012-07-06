@@ -13,48 +13,30 @@ package
 	 * @author Toshiyuki Suzumura  / Twitter:@suzumura_ss
 	 */
 	
-	public class CubicMesh extends WorldMesh
+	public class CubicMesh extends CubicMesh6
 	{
 		public function CubicMesh(option:Dictionary = null)
 		{
 			super(option);
-			_self = new Box(1000, 1000, 1000, 1, 1, 1, true);
 		}
 		
-		public override function applyTexture(bitmapData:BitmapData, stage3D:Stage3D):void
+		override public function applyTexture(bitmapData:BitmapData, stage3D:Stage3D, index:int = 0):void
 		{
 			var bits:Vector.<BitmapData> = new Vector.<BitmapData>;
-			var w:int = bitmapData.width / 3, h:int = bitmapData.height / 2, i:int;
-			var b:BitmapData;
-			var mat:Matrix;
+			var w:int = bitmapData.width / 3, h:int = bitmapData.height / 2;
 			
 			// 3x2
-			const X:Array = [2, 1, 2, 0, 0, 1];
-			const Y:Array = [1, 1, 0, 0, 1, 0];
-			for (i = 0; i < 6; i++) {
-				b = new BitmapData(w, h);
-				mat = new Matrix(1, 0, 0, 1, -w * X[i], -h * Y[i]);
-				b.draw(bitmapData, mat);
-				if (i == 1) {
-					var c:BitmapData = new BitmapData(w, h);
-					mat = new Matrix();
-					mat.translate( -w / 2.0, -h / 2.0);
-					mat.rotate(Math.PI);
-					mat.translate( w / 2.0, h / 2.0);
-					c.draw(b, mat);
-					bits.push(c);
-				} else {
+			for (var y:int = 0; y < 2; y++) {
+				for (var x:int = 0; x < 3; x++) {
+					var b:BitmapData = new BitmapData(w, h);
+					var mat:Matrix = new Matrix(1, 0, 0, 1, -w * x, -h * y);
+					b.draw(bitmapData, mat);
 					bits.push(b);
 				}
 			}
-			i = 0;
+			var i:int = 0;
 			for each(b in bits) {
-				var t:ImageTextureResource = new ImageTextureResource(b, true);
-				var m:TextureMaterial = new TextureMaterial(t);
-				if(stage3D && stage3D.context3D) {
-					t.upload(stage3D.context3D);
-				}
-				_self.addSurface(m, i * 6, 2);
+				super.applyTexture(b, stage3D, i);
 				i++;
 			}
 		}

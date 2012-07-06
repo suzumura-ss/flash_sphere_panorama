@@ -21,7 +21,7 @@ package
 			_option = option || new Dictionary();
 		}
 		
-		public function applyTexture(bitmapData:BitmapData, stage3D:Stage3D):void
+		public function applyTexture(bitmapData:BitmapData, stage3D:Stage3D, index:int = 0):void
 		{
 			var t:ImageTextureResource = new ImageTextureResource(bitmapData, true);
 			var m:TextureMaterial = new TextureMaterial(t);

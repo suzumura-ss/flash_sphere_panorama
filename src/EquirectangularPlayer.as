@@ -1,6 +1,7 @@
 package  
 {
 	import alternativa.engine3d.core.Camera3D;
+	import alternativa.engine3d.core.events.Event3D;
 	import alternativa.engine3d.core.events.MouseEvent3D;
 	import alternativa.engine3d.core.Object3D;
 	import alternativa.engine3d.core.Resource;
@@ -39,12 +40,13 @@ package
 			_indicator = new LoadIndicator(parent, width_ / 2.0, height_ / 2.0, 50, 30, 30, 4, 0xffffff, 2);
 		}
 		
-		public function load(url:String):void
+		public function load(url:String, onCompleted:Function = null):void
 		{
 			var loader:Loader = new Loader();
-			loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onImageLoadCompleted);
+			onCompleted ||= onImageLoadCompleted;
+			loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onCompleted);
 			loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, function(e:Event):void {
-				trace(e);
+				Utils.Trace(e);
 				_indicator.destroy();
 			});
 			loader.load(new URLRequest(url));
@@ -68,24 +70,27 @@ package
 				for each (var resource:Resource in _rootContainer.getResources(true)) {
 					resource.upload(_stage3D.context3D);
 				}
-				_parent.addEventListener(Event.ENTER_FRAME, onEnterFrame);
 				_indicator.destroy();
 			});
 			
 			if (_options["cubic"]) {
-				_worldMesh = new CubicMesh(_options);
+				if (_options["cubic"] as Array) {
+					_worldMesh = new CubicMesh6(_options);
+				} else {
+					_worldMesh = new CubicMesh(_options);
+				}
 			} else {
 				_worldMesh = new SphereMesh(_options);
 			}
 			_worldMesh.applyTexture(bitmapData, _stage3D);
 			_rootContainer.addChild(_worldMesh.mesh());
 			
-			_stage3D.requestContext3D();
-			
 			_worldMesh.mesh().doubleClickEnabled = true;
 			_worldMesh.mesh().addEventListener(MouseEvent3D.DOUBLE_CLICK, function(e:MouseEvent3D):void {
 				_controller.lookAt(new Vector3D(e.localX, e.localY, e.localZ));
 			});
+			
+			_stage3D.requestContext3D();
 		}
 		
 		private function onImageLoadCompleted(e:Event):void
@@ -93,11 +98,30 @@ package
 			try {
 				var image:Bitmap = e.target.content as Bitmap;
 			} catch (x:SecurityError) {
-				trace(e);
+				Utils.Trace(e);
 				_indicator.destroy();
 				return;
 			}
 			setup(image.bitmapData);
+			if ((_options["cubic"] as Array) && (_options["cubic"].length > 0)) {
+				load(_options["cubic"].shift(), onLoadCubicTexture);
+			}
+		}
+		
+		private function onLoadCubicTexture(e:Event):void
+		{
+			try {
+				var image:Bitmap = e.target.content as Bitmap;
+			} catch (x:SecurityError) {
+				Utils.Trace(e);
+				return;
+			}
+			_worldMesh.applyTexture(image.bitmapData, _stage3D, 5 - _options["cubic"].length);
+			if (_options["cubic"].length > 0) {
+				load(_options["cubic"].shift(), onLoadCubicTexture);
+			} else {
+				_indicator.destroy();
+			}
 		}
 		
 		private function onEnterFrame(e:Event):void

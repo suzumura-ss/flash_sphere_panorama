@@ -8,6 +8,7 @@ package
 	import flash.external.ExternalInterface;
 	import flash.geom.Vector3D;
 	import flash.utils.Dictionary;
+	import jp.nium.utils.ObjectUtil;
 	import jp.nium.utils.URLUtil;
 	
 	/**
@@ -48,9 +49,12 @@ package
 			stage.scaleMode = StageScaleMode.NO_SCALE;
 			
 			if (sourceUrl) {
-				trace("Loading: " + sourceUrl);
-				
-				var ext:String = URLUtil.getExtension(sourceUrl).toLowerCase();
+				var sources:Array = sourceUrl.split(",");
+				if (sources.length > 1) {
+					sourceUrl = sources.shift();
+					opt["cubic"] = sources;
+				}
+				var ext:String = URLUtil.getExtension(sourceUrl.toString()).toLowerCase();
 				if (IMAGES.indexOf(ext) >= 0) {
 					_player = new EquirectangularPlayer(stage.stageWidth, stage.stageHeight, this, opt);
 				} else if (VIDEOS.indexOf(ext) >= 0) {
@@ -58,7 +62,7 @@ package
 				}
 			}
 			if (_player) {
-				_player.load(sourceUrl);
+				_player.load(sourceUrl.toString());
 				if (ExternalInterface.available) {
 					try {
 						ExternalInterface.addCallback("snapshot", function():String {
@@ -77,14 +81,12 @@ package
 						ExternalInterface.addCallback("rotate", function(yaw:Number, pitch:Number):void {
 							_player.rotate(yaw, pitch);
 						});
-					} catch (x:SecurityError) {
-						trace(x);
 					} catch (x:Error) {
-						trace(x);
+						Utils.Trace(x);
 					}
 				}
 			} else {
-				trace("No source is specified or " + sourceUrl + " is not supported.");
+				Utils.Trace("No source is specified or " + sourceUrl + " is not supported.");
 			}
 		}
 	}
