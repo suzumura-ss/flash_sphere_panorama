@@ -27,6 +27,7 @@ package
 			this.maxPitch = center + Math.PI / 2.0;
 			this.minPitch = center - Math.PI / 2.0;
 			this.lookAt(_lookAtWithRotation);
+			unbindAll();
 			
 			_camera = camera;
 			_angle = options["angle"] || 60;
